@@ -13,3 +13,4 @@
 - [2025-12-15 13:27:17] Fix typo in README documentation (Task ID: 133)
 - [2025-12-16 11:16:19] Fix typo in README documentation (Task ID: 334)
 - [2025-12-17 13:31:31] Refactor state management in board view (Task ID: 354)
+- [2025-12-17 15:18:41] Add logging for debugging purposes (Task ID: 566)
