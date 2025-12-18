@@ -15,3 +15,4 @@
 - [2025-12-17 13:31:31] Refactor state management in board view (Task ID: 354)
 - [2025-12-17 15:18:41] Add logging for debugging purposes (Task ID: 566)
 - [2025-12-17 10:59:13] Fix navigation state issues (Task ID: 565)
+- [2025-12-18 10:11:23] Fix typo in README documentation (Task ID: 576)
