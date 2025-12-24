@@ -27,3 +27,4 @@
 - [2025-12-22 19:57:03] Fix typo in README documentation (Task ID: 552)
 - [2025-12-22 13:45:42] Update translation files (Task ID: 181)
 - [2025-12-23 12:31:52] Update translation files (Task ID: 397)
+- [2025-12-24 15:39:18] Improve accessibility labels (Task ID: 526)
