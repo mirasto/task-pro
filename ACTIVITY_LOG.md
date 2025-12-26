@@ -32,3 +32,4 @@
 - [2025-12-25 10:04:33] Update color palette to match design system (Task ID: 195)
 - [2025-12-25 10:00:17] Fix button hover states (Task ID: 930)
 - [2025-12-25 19:53:13] Refactor state management in board view (Task ID: 912)
+- [2025-12-26 15:03:34] Update security headers (Task ID: 929)
