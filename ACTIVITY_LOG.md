@@ -39,3 +39,4 @@
 - [2025-12-27 11:08:29] Refactor state management in board view (Task ID: 883)
 - [2025-12-28 17:25:43] Refactor header component (Task ID: 588)
 - [2025-12-28 19:23:22] Update security headers (Task ID: 789)
+- [2025-12-28 14:36:03] Update font sizes for readability (Task ID: 770)
