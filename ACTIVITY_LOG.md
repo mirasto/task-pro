@@ -40,3 +40,4 @@
 - [2025-12-28 17:25:43] Refactor header component (Task ID: 588)
 - [2025-12-28 19:23:22] Update security headers (Task ID: 789)
 - [2025-12-28 14:36:03] Update font sizes for readability (Task ID: 770)
+- [2025-12-29 19:53:23] Fix typo in README documentation (Task ID: 326)
