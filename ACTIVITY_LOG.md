@@ -43,3 +43,4 @@
 - [2025-12-29 19:53:23] Fix typo in README documentation (Task ID: 326)
 - [2025-12-29 13:24:46] Fix responsive design issues on mobile (Task ID: 746)
 - [2025-12-30 13:07:33] Update footer links (Task ID: 372)
+- [2025-12-30 18:54:03] Add logging for debugging purposes (Task ID: 829)
