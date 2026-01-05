@@ -55,3 +55,4 @@
 - [2026-01-04 10:59:59] Add tooltips for icons (Task ID: 534)
 - [2026-01-04 10:23:48] Update dependency versions (Task ID: 543)
 - [2026-01-05 19:20:13] Fix memory leak in event listeners (Task ID: 894)
+- [2026-01-05 15:29:24] Clean up unused code and imports (Task ID: 954)
