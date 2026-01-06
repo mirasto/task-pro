@@ -58,3 +58,4 @@
 - [2026-01-05 15:29:24] Clean up unused code and imports (Task ID: 954)
 - [2026-01-06 17:15:45] Fix modal closing behavior (Task ID: 106)
 - [2026-01-06 18:00:02] Update footer links (Task ID: 409)
+- [2026-01-06 18:15:59] Refactor api routes (Task ID: 370)
