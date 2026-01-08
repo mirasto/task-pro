@@ -60,3 +60,4 @@
 - [2026-01-06 18:00:02] Update footer links (Task ID: 409)
 - [2026-01-06 18:15:59] Refactor api routes (Task ID: 370)
 - [2026-01-07 19:35:54] Refactor state management in board view (Task ID: 663)
+- [2026-01-08 11:49:08] Fix responsive design issues on mobile (Task ID: 556)
