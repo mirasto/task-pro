@@ -64,3 +64,4 @@
 - [2026-01-08 10:14:56] Update dependency versions (Task ID: 723)
 - [2026-01-09 17:31:24] Fix modal closing behavior (Task ID: 464)
 - [2026-01-10 16:18:46] Fix modal closing behavior (Task ID: 846)
+- [2026-01-10 18:15:49] Add loading skeletons for better UX (Task ID: 465)
