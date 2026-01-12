@@ -67,3 +67,4 @@
 - [2026-01-10 18:15:49] Add loading skeletons for better UX (Task ID: 465)
 - [2026-01-11 12:22:25] Fix modal closing behavior (Task ID: 833)
 - [2026-01-12 12:55:37] Update dashboard layout components (Task ID: 439)
+- [2026-01-12 17:59:04] Refactor api routes (Task ID: 549)
