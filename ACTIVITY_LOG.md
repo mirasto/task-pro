@@ -69,3 +69,4 @@
 - [2026-01-12 12:55:37] Update dashboard layout components (Task ID: 439)
 - [2026-01-12 17:59:04] Refactor api routes (Task ID: 549)
 - [2026-01-12 18:09:56] Refactor header component (Task ID: 368)
+- [2026-01-13 14:45:06] Fix button hover states (Task ID: 289)
