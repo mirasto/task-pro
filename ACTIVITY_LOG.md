@@ -74,3 +74,4 @@
 - [2026-01-14 09:56:02] Refactor header component (Task ID: 686)
 - [2026-01-14 18:55:28] Update security headers (Task ID: 751)
 - [2026-01-14 13:52:36] Update color palette to match design system (Task ID: 135)
+- [2026-01-15 15:56:21] Fix memory leak in event listeners (Task ID: 479)
