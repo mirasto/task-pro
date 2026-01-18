@@ -177,8 +177,8 @@ task-pro/
 
 <p align="center">
 
-  <img src="https://i.ibb.co/YTPT17D3/profile.png" width="50%" />
-  <img src="https://i.ibb.co/TB6Zwr09/tasks.png" width="50%" />
+  <img src="https://i.ibb.co/YTPT17D3/profile.png" width="100%" />
+  <img src="https://i.ibb.co/TB6Zwr09/tasks.png" width="100%" />
 
 </p>
 
@@ -187,4 +187,4 @@ task-pro/
 ---
 ## 🔗 Links
 
-* **Live Demo:** *(optional)*
+* **Live Demo:** [*(task-pro)*](https://task-pro-eta.vercel.app/)
