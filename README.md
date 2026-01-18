@@ -15,7 +15,8 @@
   <img src="https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore-ffca28" />
 </p>
 
-  
+
+
 
 ---
 
@@ -27,7 +28,7 @@
 
 **Task Pro** is a production-ready task management dashboard focused on **performance, scalability, and clean architecture**.
 
-  
+![Preview](https://iili.io/fUPLqHg.png)  
 
 Built with **Next.js App Router**, **React 19**, and **Redux Toolkit**, the app demonstrates real-world patterns: authentication, protected routes, real-time data sync, analytics, and internationalization.
 
@@ -176,9 +177,8 @@ task-pro/
 
 <p align="center">
 
-  <img src="./docs/screenshots/dashboard.png" width="45%" />
-
-  <img src="./docs/screenshots/board.png" width="45%" />
+  <img src="https://i.ibb.co/YTPT17D3/profile.png" width="50%" />
+  <img src="https://i.ibb.co/TB6Zwr09/tasks.png" width="50%" />
 
 </p>
 
