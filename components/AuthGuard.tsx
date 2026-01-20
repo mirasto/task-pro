@@ -13,16 +13,10 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (loading) return;
 
-    const publicPaths = ["/", "/login", "/register", "/guest"];
-    const isPublic = publicPaths.some((p) => pathname === p);
     const isProtected = ["/dashboard", "/tasks", "/board"].some((p) => pathname.startsWith(p));
 
     if (!user && isProtected) {
       router.replace("/login");
-    }
-
-    if (user && isPublic) {
-      router.replace("/dashboard");
     }
   }, [user, loading, pathname, router]);
 

@@ -21,9 +21,13 @@ export default function ProfilePage() {
     const { t } = useTranslation();
 
     const handleLogout = async () => {
-        await signOut(auth);
-        dispatch(logout());
-        router.replace("/");
+        try {
+            await signOut(auth);
+            dispatch(logout());
+            router.replace("/");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
     };
 
     const userEmail = user?.email || "guest@taskpro.com";

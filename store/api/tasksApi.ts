@@ -1,49 +1,7 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
-import { db, auth } from '@/firebase';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from 'firebase/firestore';
+import { auth } from '@/firebase';
 
-const DELETE_QUEUE_KEY = 'taskpro_delete_queue';
-
-const addToDeleteQueue = (id: string) => {
-  if (typeof window === 'undefined') return;
-  try {
-    const raw = window.localStorage.getItem(DELETE_QUEUE_KEY);
-    const parsed = raw ? (JSON.parse(raw) as string[]) : [];
-    if (!parsed.includes(id)) {
-      parsed.push(id);
-      window.localStorage.setItem(DELETE_QUEUE_KEY, JSON.stringify(parsed));
-    }
-  } catch {
-  }
-};
-
-const processDeleteQueue = async (collectionPath: string) => {
-  if (typeof window === 'undefined') return;
-  const raw = window.localStorage.getItem(DELETE_QUEUE_KEY);
-  if (!raw) return;
-  let ids: string[];
-  try {
-    ids = JSON.parse(raw) as string[];
-  } catch {
-    window.localStorage.removeItem(DELETE_QUEUE_KEY);
-    return;
-  }
-  if (!ids.length) return;
-  const remaining: string[] = [];
-  for (const id of ids) {
-    try {
-      const docRef = doc(db, collectionPath, id);
-      await deleteDoc(docRef);
-    } catch {
-      remaining.push(id);
-    }
-  }
-  if (remaining.length) {
-    window.localStorage.setItem(DELETE_QUEUE_KEY, JSON.stringify(remaining));
-  } else {
-    window.localStorage.removeItem(DELETE_QUEUE_KEY);
-  }
-};
+const STORAGE_KEY = 'taskpro_tasks';
 
 export interface Task {
   id: string;
@@ -58,6 +16,21 @@ export interface Task {
   assignedTo?: string;
 }
 
+const getLocalTasks = (): Task[] => {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+};
+
+const setLocalTasks = (tasks: Task[]) => {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+};
+
 export const tasksApi = createApi({
   reducerPath: 'tasksApi',
   baseQuery: fakeBaseQuery(),
@@ -67,38 +40,15 @@ export const tasksApi = createApi({
       async queryFn() {
         try {
           const user = auth.currentUser;
+          // Return empty array if no user, but don't error out
+          // This allows the UI to just show "no tasks" or empty state
           if (!user) return { data: [] };
 
-          const collectionPath = user.isAnonymous
-            ? `guests/${user.uid}/tasks`
-            : `users/${user.uid}/tasks`;
-
-          if (typeof window !== 'undefined') {
-            await processDeleteQueue(collectionPath);
-          }
-
-          const q = query(collection(db, collectionPath));
-          const querySnapshot = await getDocs(q);
-          const tasks: Task[] = [];
-          querySnapshot.forEach((docSnapshot) => {
-            tasks.push({ id: docSnapshot.id, ...docSnapshot.data() } as Task);
-          });
-
-          let filteredTasks = tasks;
-          if (typeof window !== 'undefined') {
-            const rawQueue = window.localStorage.getItem(DELETE_QUEUE_KEY);
-            if (rawQueue) {
-              try {
-                const queuedIds = JSON.parse(rawQueue) as string[];
-                if (queuedIds.length) {
-                  filteredTasks = tasks.filter((task) => !queuedIds.includes(task.id));
-                }
-              } catch {
-              }
-            }
-          }
-
-          return { data: filteredTasks };
+          const allTasks = getLocalTasks();
+          // Filter tasks for the current user
+          const userTasks = allTasks.filter(task => task.userId === user.uid);
+          
+          return { data: userTasks };
         } catch (error: any) {
           return { error: error.message };
         }
@@ -111,18 +61,22 @@ export const tasksApi = createApi({
           const user = auth.currentUser;
           if (!user) throw new Error("User not authenticated");
 
-          const collectionPath = user.isAnonymous
-            ? `guests/${user.uid}/tasks`
-            : `users/${user.uid}/tasks`;
-
-          const newTask = {
-            ...task,
+          const newTask: Task = {
+            id: 'task-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+            title: task.title || '',
+            description: task.description,
+            priority: task.priority || 'medium',
+            status: task.status || 'todo',
             userId: user.uid,
             createdAt: new Date().toISOString(),
+            ...task,
           };
 
-          const docRef = await addDoc(collection(db, collectionPath), newTask);
-          return { data: docRef.id };
+          const allTasks = getLocalTasks();
+          allTasks.push(newTask);
+          setLocalTasks(allTasks);
+
+          return { data: newTask.id };
         } catch (error: any) {
           return { error: error.message };
         }
@@ -135,12 +89,17 @@ export const tasksApi = createApi({
           const user = auth.currentUser;
           if (!user) throw new Error("User not authenticated");
 
-          const collectionPath = user.isAnonymous
-            ? `guests/${user.uid}/tasks`
-            : `users/${user.uid}/tasks`;
-
-          const docRef = doc(db, collectionPath, id);
-          await updateDoc(docRef, data);
+          const allTasks = getLocalTasks();
+          const index = allTasks.findIndex(t => t.id === id);
+          
+          if (index !== -1) {
+            // Ensure user owns the task
+            if (allTasks[index].userId === user.uid) {
+              allTasks[index] = { ...allTasks[index], ...data };
+              setLocalTasks(allTasks);
+            }
+          }
+          
           return { data: null };
         } catch (error: any) {
           return { error: error.message };
@@ -154,33 +113,16 @@ export const tasksApi = createApi({
           const user = auth.currentUser;
           if (!user) throw new Error("User not authenticated");
 
-          const collectionPath = user.isAnonymous
-            ? `guests/${user.uid}/tasks`
-            : `users/${user.uid}/tasks`;
-
-          const docRef = doc(db, collectionPath, id);
-          await deleteDoc(docRef);
+          const allTasks = getLocalTasks();
+          const newTasks = allTasks.filter(t => t.id !== id);
+          setLocalTasks(newTasks);
+          
           return { data: null };
         } catch (error: any) {
           return { error: error.message };
         }
       },
       invalidatesTags: ['Task'],
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
-        dispatch(
-          tasksApi.util.updateQueryData('getTasks', undefined, (draft) => {
-            const index = draft.findIndex((task) => task.id === id);
-            if (index !== -1) {
-              draft.splice(index, 1);
-            }
-          })
-        );
-        try {
-          await queryFulfilled;
-        } catch {
-          addToDeleteQueue(id);
-        }
-      },
     }),
   }),
 });

@@ -30,8 +30,10 @@ const COLORS = {
 };
 
 export default function AnalyticsPage() {
-    const { user } = useAppSelector((state) => state.auth);
-    const { data: tasks, isLoading } = useGetTasksQuery();
+    const { user, loading: authLoading } = useAppSelector((state) => state.auth);
+    const { data: tasks, isLoading } = useGetTasksQuery(undefined, {
+        skip: authLoading || !user,
+    });
     const { t } = useTranslation();
     const [selectedStatus, setSelectedStatus] = useState<"all" | "todo" | "in_progress" | "done">("all");
 

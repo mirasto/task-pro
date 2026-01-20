@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/firebase";
@@ -8,11 +8,13 @@ import { auth } from "@/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
+import { useAppSelector } from "@/store/hooks";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { getAuthErrorMessage } from "@/lib/authErrors";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -26,10 +28,18 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+  const { user, loading: authLoading } = useAppSelector((s) => s.auth);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { t } = useTranslation();
+
+  // Redirect if already logged in, but not if we are currently submitting (handled by onSubmit)
+  useEffect(() => {
+    if (user && !loading && !authLoading) {
+      router.replace("/dashboard");
+    }
+  }, [user, loading, authLoading, router]);
 
   const {
     register,
@@ -49,7 +59,7 @@ export default function LoginPage() {
       }, { merge: true });
       router.replace("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(getAuthErrorMessage(err.code));
     } finally {
       setLoading(false);
     }

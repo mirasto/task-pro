@@ -20,7 +20,7 @@ const db = getFirestore(app);
 
 let analyticsPromise: Promise<ReturnType<typeof getAnalytics> | null> | null = null;
 
-if (typeof window !== "undefined" && firebaseConfig.measurementId) {
+if (typeof window !== "undefined" && firebaseConfig.measurementId && process.env.NODE_ENV === "production") {
   analyticsPromise = isAnalyticsSupported().then(supported =>
     supported ? getAnalytics(app) : null
   );

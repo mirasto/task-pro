@@ -9,8 +9,10 @@ import { useAppSelector } from "@/store/hooks";
 import { useTranslation } from "react-i18next";
 
 export default function DashboardPage() {
-  const { user } = useAppSelector((state) => state.auth);
-  const { data: tasks, isLoading } = useGetTasksQuery();
+  const { user, loading: authLoading } = useAppSelector((state) => state.auth);
+  const { data: tasks, isLoading } = useGetTasksQuery(undefined, {
+    skip: authLoading || !user,
+  });
   const { t } = useTranslation();
 
   const displayName = user?.displayName || user?.email || "guest";

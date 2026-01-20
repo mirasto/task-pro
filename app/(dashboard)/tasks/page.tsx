@@ -1,49 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useGetTasksQuery, Task } from "@/store/api/tasksApi";
+import { useGetTasksQuery } from "@/store/api/tasksApi";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { AddTaskButton } from "@/components/tasks/TaskForm";
 import { Loader2 } from "lucide-react";
 import { useAppSelector } from "@/store/hooks";
 
-const LOCAL_STORAGE_KEY = "taskpro_tasks";
-
 export default function TasksPage() {
   const { user, loading: authLoading } = useAppSelector((s) => s.auth);
   const {
-    data,
+    data: tasks,
     isLoading,
     error,
   } = useGetTasksQuery(undefined, {
     skip: authLoading || !user,
   });
-  const [localTasks, setLocalTasks] = useState<Task[]>([]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as Task[];
-        setLocalTasks(parsed);
-      } catch {
-        window.localStorage.removeItem(LOCAL_STORAGE_KEY);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!data || !data.length) return;
-    setLocalTasks(data);
-    window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
-
-  const tasks = data ?? [];
-  const effectiveTasks = tasks.length ? tasks : localTasks;
-
-  if ((authLoading || isLoading) && !effectiveTasks.length) {
+  if (authLoading || (isLoading && !tasks)) {
     return (
       <div className="flex h-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
@@ -51,9 +24,11 @@ export default function TasksPage() {
     );
   }
 
-  if (!authLoading && error && !effectiveTasks.length) {
+  if (!authLoading && error) {
     return <div className="text-red-500">Error loading tasks</div>;
   }
+
+  const effectiveTasks = tasks || [];
 
   return (
     <div className="flex h-full flex-col space-y-6 overflow-hidden">
