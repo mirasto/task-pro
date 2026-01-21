@@ -261,7 +261,7 @@ export function TaskCard({ task, className, onDeleteError, showFullContent = fal
               onClick={() => handleStatusChange(task.status === 'done' ? 'todo' : 'done')}
               disabled={isUpdating}
               className={clsx(
-                "h-7 text-xs w-full transition-all",
+                "h-8 text-xs w-full transition-all",
                 task.status === 'done' 
                   ? "bg-background hover:bg-muted text-muted-foreground border-dashed" 
                   : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
@@ -282,7 +282,7 @@ export function TaskCard({ task, className, onDeleteError, showFullContent = fal
                   disabled={isUpdating}
                   aria-pressed={task.status === status.id}
                   className={clsx(
-                    "flex-1 py-1 px-2 text-[10px] font-medium rounded transition-all duration-200 border",
+                    "flex-1 py-1 px-2 text-xs md:text-sm font-medium rounded transition-all duration-200 border",
                     task.status === status.id
                       ? status.color + " shadow-sm scale-[1.02]"
                       : "bg-transparent border-transparent text-muted-foreground hover:bg-muted"
