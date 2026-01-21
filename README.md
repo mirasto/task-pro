@@ -21,8 +21,7 @@ Task Pro is designed with a focus on user experience and performance. It leverag
 - **Redux Toolkit**: The official, opinionated, batteries-included toolset for efficient Redux development.
 - **RTK Query**: A powerful data fetching and caching tool designed to simplify loading data in a web application.
 ### Backend & Authentication
-- **Firebase**:
-  - **Authentication**: Secure email/password login and anonymous guest access.
+- **Firebase**: **Authentication**: Secure email/password login and anonymous guest access.
 ### Styling & UI
 - **Tailwind CSS 4**: A utility-first CSS framework for rapid UI development.
 - **Framer Motion**: A production-ready motion library for React to create smooth animations.
