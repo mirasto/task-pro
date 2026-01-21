@@ -43,6 +43,7 @@ function TaskForm({ onClose }: { onClose: () => void }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<Task['priority']>('medium');
+  const [status, setStatus] = useState<Task['status']>('todo');
   const [addTask, { isLoading }] = useAddTaskMutation();
   const { t } = useTranslation();
 
@@ -54,7 +55,7 @@ function TaskForm({ onClose }: { onClose: () => void }) {
       title,
       description,
       priority,
-      status: 'todo',
+      status,
     });
     onClose();
   };
@@ -87,23 +88,50 @@ function TaskForm({ onClose }: { onClose: () => void }) {
               disabled={isLoading}
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">{t("tasks.form.priority")}</label>
-            <div className="flex gap-2">
-              {(['low', 'medium', 'high'] as const).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setPriority(p)}
-                  disabled={isLoading}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors disabled:opacity-50 ${priority === p
-                      ? 'bg-primary/10 border-primary text-primary'
-                      : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">{t("tasks.form.priority")}</label>
+              <div className="flex flex-wrap gap-2">
+                {(['low', 'medium', 'high'] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPriority(p)}
+                    disabled={isLoading}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors disabled:opacity-50 ${priority === p
+                        ? 'bg-primary/10 border-primary text-primary'
+                        : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                  >
+                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">{t("tasks.form.status") || "Tasks Status"}</label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'todo', label: t("tasks.status.todo") || "To Do", color: 'border-blue-500 text-blue-600 bg-blue-50' },
+                  { id: 'in_progress', label: t("tasks.status.in_progress") || "In Progress", color: 'border-amber-500 text-amber-600 bg-amber-50' },
+                  { id: 'done', label: t("tasks.status.done") || "Done", color: 'border-green-500 text-green-600 bg-green-50' }
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setStatus(s.id as Task['status'])}
+                    disabled={isLoading}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-all disabled:opacity-50 ${
+                      status === s.id
+                        ? `${s.color} ring-1 ring-offset-1 ring-offset-background`
+                        : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground'
                     }`}
-                >
-                  {p.charAt(0).toUpperCase() + p.slice(1)}
-                </button>
-              ))}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </CardContent>

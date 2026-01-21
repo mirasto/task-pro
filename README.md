@@ -44,7 +44,7 @@ Built with **Next.js App Router**, **React 19**, and **Redux Toolkit**, the app 
 
 * 🔐 **Authentication** — Firebase Auth (Email / Guest), protected routes
 
-* 📋 **Task Management** — CRUD, priorities, List & Kanban Board
+* 📋 **Task Management** — CRUD, priorities, List View
 
 * 📊 **Analytics** — real-time charts, completion metrics
 

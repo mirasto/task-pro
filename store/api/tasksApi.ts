@@ -14,6 +14,7 @@ export interface Task {
   dueDate?: string;
   tags?: string[];
   assignedTo?: string;
+  order: number;
 }
 
 const getLocalTasks = (): Task[] => {
@@ -40,14 +41,17 @@ export const tasksApi = createApi({
       async queryFn() {
         try {
           const user = auth.currentUser;
-          // Return empty array if no user, but don't error out
-          // This allows the UI to just show "no tasks" or empty state
           if (!user) return { data: [] };
 
           const allTasks = getLocalTasks();
-          // Filter tasks for the current user
           const userTasks = allTasks.filter(task => task.userId === user.uid);
           
+          // Sort by order, then by createdAt as fallback
+          userTasks.sort((a, b) => {
+             if (a.order !== b.order) return a.order - b.order;
+             return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          });
+
           return { data: userTasks };
         } catch (error: any) {
           return { error: error.message };
@@ -61,6 +65,12 @@ export const tasksApi = createApi({
           const user = auth.currentUser;
           if (!user) throw new Error("User not authenticated");
 
+          const allTasks = getLocalTasks();
+          const userTasks = allTasks.filter(t => t.userId === user.uid && t.status === (task.status || 'todo'));
+          
+          // New tasks go to the end
+          const maxOrder = userTasks.length > 0 ? Math.max(...userTasks.map(t => t.order || 0)) : -1;
+
           const newTask: Task = {
             id: 'task-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
             title: task.title || '',
@@ -69,10 +79,10 @@ export const tasksApi = createApi({
             status: task.status || 'todo',
             userId: user.uid,
             createdAt: new Date().toISOString(),
+            order: maxOrder + 1,
             ...task,
           };
 
-          const allTasks = getLocalTasks();
           allTasks.push(newTask);
           setLocalTasks(allTasks);
 
@@ -93,7 +103,6 @@ export const tasksApi = createApi({
           const index = allTasks.findIndex(t => t.id === id);
           
           if (index !== -1) {
-            // Ensure user owns the task
             if (allTasks[index].userId === user.uid) {
               allTasks[index] = { ...allTasks[index], ...data };
               setLocalTasks(allTasks);
@@ -106,6 +115,35 @@ export const tasksApi = createApi({
         }
       },
       invalidatesTags: ['Task'],
+    }),
+    reorderTasks: builder.mutation<null, { tasks: { id: string; order: number; status: Task['status'] }[] }>({
+        async queryFn({ tasks }) {
+            try {
+                const user = auth.currentUser;
+                if (!user) throw new Error("User not authenticated");
+
+                const allTasks = getLocalTasks();
+                let changed = false;
+
+                tasks.forEach(update => {
+                    const index = allTasks.findIndex(t => t.id === update.id);
+                    if (index !== -1 && allTasks[index].userId === user.uid) {
+                        allTasks[index].order = update.order;
+                        allTasks[index].status = update.status;
+                        changed = true;
+                    }
+                });
+
+                if (changed) {
+                    setLocalTasks(allTasks);
+                }
+
+                return { data: null };
+            } catch (error: any) {
+                return { error: error.message };
+            }
+        },
+        invalidatesTags: ['Task'],
     }),
     deleteTask: builder.mutation<null, string>({
       async queryFn(id) {
@@ -127,4 +165,4 @@ export const tasksApi = createApi({
   }),
 });
 
-export const { useGetTasksQuery, useAddTaskMutation, useUpdateTaskMutation, useDeleteTaskMutation } = tasksApi;
+export const { useGetTasksQuery, useAddTaskMutation, useUpdateTaskMutation, useDeleteTaskMutation, useReorderTasksMutation } = tasksApi;

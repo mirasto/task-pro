@@ -37,7 +37,7 @@ export default function LandingPage() {
             <ThemeToggle />
             <LanguageSwitcher />
             {user ? (
-              <Link href="/board">
+              <Link href="/dashboard">
                 <Button>{t("landing.dashboard")}</Button>
               </Link>
             ) : (
@@ -70,7 +70,7 @@ export default function LandingPage() {
                 {t("landing.subtitle")}
               </p>
               <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href={user ? "/board" : "/register"}>
+                <Link href={user ? "/dashboard" : "/register"}>
                   <Button size="lg" className="h-12 px-8 text-lg rounded-full group">
                     {user ? t("landing.dashboard") : t("landing.get_started")}
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CheckSquare, Kanban, LogOut, BarChart3, User } from "lucide-react";
+import { LayoutDashboard, CheckSquare, LogOut, BarChart3, User } from "lucide-react";
 import { clsx } from "clsx";
 import { auth } from "@/firebase";
 import { signOut } from "firebase/auth";
@@ -26,7 +26,6 @@ export function Sidebar() {
   const links = [
     { href: "/dashboard", label: t("nav.dashboard"), icon: LayoutDashboard },
     { href: "/tasks", label: t("nav.tasks"), icon: CheckSquare },
-    { href: "/board", label: t("nav.board"), icon: Kanban },
     { href: "/analytics", label: t("nav.analytics") || "Analytics", icon: BarChart3 },
     { href: "/profile", label: t("nav.profile") || "Profile", icon: User },
   ];

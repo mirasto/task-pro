@@ -95,10 +95,16 @@ export function TaskCard({ task, className, onDeleteError, showFullContent = fal
     setIsEditing(false);
   };
 
-  const toggleStatus = async () => {
-    const newStatus = task.status === 'done' ? 'todo' : 'done';
+  const handleStatusChange = async (newStatus: Task['status']) => {
+    if (newStatus === task.status) return;
     await updateTask({ id: task.id, data: { status: newStatus } });
   };
+
+  const statusOptions = [
+    { id: 'todo', label: 'Todo', color: 'bg-blue-500/10 text-blue-600 border-blue-200 hover:bg-blue-500/20' },
+    { id: 'in_progress', label: 'In Progress', color: 'bg-amber-500/10 text-amber-600 border-amber-200 hover:bg-amber-500/20' },
+    { id: 'done', label: 'Done', color: 'bg-green-500/10 text-green-600 border-green-200 hover:bg-green-500/20' }
+  ] as const;
 
   const dueDate = task.dueDate ? new Date(task.dueDate) : null;
   const isOverdue = dueDate && dueDate < new Date() && task.status !== 'done';
@@ -248,11 +254,11 @@ export function TaskCard({ task, className, onDeleteError, showFullContent = fal
             )}
           </CardContent>
 
-          <CardFooter className="px-4 py-3 border-t bg-muted/5 flex items-center justify-between mt-auto">
+          <CardFooter className="px-4 py-3 border-t bg-muted/5 flex flex-col gap-3 mt-auto">
             <Button
               variant={task.status === 'done' ? "outline" : "default"}
               size="sm"
-              onClick={toggleStatus}
+              onClick={() => handleStatusChange(task.status === 'done' ? 'todo' : 'done')}
               disabled={isUpdating}
               className={clsx(
                 "h-7 text-xs w-full transition-all",
@@ -267,6 +273,25 @@ export function TaskCard({ task, className, onDeleteError, showFullContent = fal
                 <>Mark as Complete</>
               )}
             </Button>
+            
+            <div className="flex w-full rounded-md shadow-sm border border-border/50 bg-background/50 p-1 gap-1" role="group" aria-label="Task Status">
+              {statusOptions.map((status) => (
+                <button
+                  key={status.id}
+                  onClick={() => handleStatusChange(status.id)}
+                  disabled={isUpdating}
+                  aria-pressed={task.status === status.id}
+                  className={clsx(
+                    "flex-1 py-1 px-2 text-[10px] font-medium rounded transition-all duration-200 border",
+                    task.status === status.id
+                      ? status.color + " shadow-sm scale-[1.02]"
+                      : "bg-transparent border-transparent text-muted-foreground hover:bg-muted"
+                  )}
+                >
+                  {status.label}
+                </button>
+              ))}
+            </div>
           </CardFooter>
         </Card>
       </motion.div>

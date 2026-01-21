@@ -53,12 +53,6 @@ const resources = {
           done: "Done"
         }
       },
-      board: {
-        title: "Task Board",
-        subtitle: "Drag and drop tasks to update their status",
-        no_tasks: "No tasks yet",
-        drag_here: "Drag tasks here"
-      },
       analytics: {
         title: "Analytics",
         subtitle: "Track your productivity and progress",
@@ -122,7 +116,6 @@ const resources = {
       nav: {
         dashboard: "Дашборд",
         tasks: "Завдання",
-        board: "Дошка",
         analytics: "Аналітика",
         profile: "Профіль",
         logout: "Вийти"
