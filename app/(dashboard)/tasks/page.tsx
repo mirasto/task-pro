@@ -19,13 +19,17 @@ export default function TasksPage() {
   if (authLoading || (isLoading && !tasks)) {
     return (
       <div className="flex h-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   if (!authLoading && error) {
-    return <div className="text-red-500">Error loading tasks</div>;
+    return (
+      <div className="flex h-full items-center justify-center text-destructive">
+        Error loading tasks
+      </div>
+    );
   }
 
   const effectiveTasks = tasks || [];
@@ -33,17 +37,25 @@ export default function TasksPage() {
   return (
     <div className="flex h-full flex-col space-y-6 overflow-hidden">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">My Tasks</h1>
+        <div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">My Tasks</h1>
+            <p className="text-muted-foreground">View all your tasks in one place</p>
+        </div>
         <AddTaskButton />
       </div>
 
-      <div className="grid flex-1 gap-4 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto pr-1 custom-scrollbar">
-        {effectiveTasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
-        ))}
-        {effectiveTasks.length === 0 && (
-          <div className="col-span-full py-12 text-center text-zinc-500">
-            No tasks found. Create one to get started!
+      <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+        {effectiveTasks.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-6">
+            {effectiveTasks.map((task) => (
+              <div key={task.id} className="h-full">
+                <TaskCard task={task} showFullContent={true} className="h-full" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground">
+            <p>No tasks found. Create one to get started!</p>
           </div>
         )}
       </div>

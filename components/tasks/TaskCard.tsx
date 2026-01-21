@@ -44,9 +44,10 @@ interface TaskCardProps {
   task: Task;
   className?: string;
   onDeleteError?: (message: string) => void;
+  showFullContent?: boolean;
 }
 
-export function TaskCard({ task, className, onDeleteError }: TaskCardProps) {
+export function TaskCard({ task, className, onDeleteError, showFullContent = false }: TaskCardProps) {
   const [deleteTask, { isLoading: isDeleting }] = useDeleteTaskMutation();
   const [updateTask, { isLoading: isUpdating }] = useUpdateTaskMutation();
   const [isEditing, setIsEditing] = useState(false);
@@ -160,7 +161,7 @@ export function TaskCard({ task, className, onDeleteError }: TaskCardProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="group relative h-full"
+        className="group relative"
       >
         <Card className={clsx(
           "h-full flex flex-col transition-all duration-200 border-border/60 hover:border-border hover:shadow-md",
@@ -208,7 +209,8 @@ export function TaskCard({ task, className, onDeleteError }: TaskCardProps) {
           <CardContent className="flex-1 px-4 py-2 space-y-3">
             {task.description && (
               <p className={clsx(
-                "text-sm text-muted-foreground line-clamp-3 break-words",
+                "text-sm text-muted-foreground break-words",
+                !showFullContent && "line-clamp-3",
                 task.status === 'done' && "line-through opacity-80"
               )}>
                 {task.description}

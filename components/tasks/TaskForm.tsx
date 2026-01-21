@@ -16,8 +16,9 @@ export function AddTaskButton() {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>
-        <Plus className="mr-2 h-4 w-4" /> {t("tasks.add_task")}
+      <Button onClick={() => setIsOpen(true)} className="h-auto min-h-10 whitespace-normal text-left py-2">
+        <Plus className="mr-2 h-4 w-4 shrink-0" /> 
+        <span className="break-words">{t("tasks.add_task")}</span>
       </Button>
 
       <AnimatePresence>

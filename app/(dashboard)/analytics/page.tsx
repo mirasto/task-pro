@@ -104,8 +104,9 @@ export default function AnalyticsPage() {
     ];
 
     return (
-        <div className="h-full flex flex-col overflow-hidden animate-fade-in">
-            <div className="sticky top-0 z-20 bg-gradient-to-b from-background via-background/95 to-background/90 backdrop-blur-md border-b border-border/40">
+        <div className="h-full overflow-y-auto custom-scrollbar animate-fade-in">
+            <div className="flex flex-col space-y-8 pb-8">
+            <div className="z-20 bg-gradient-to-b from-background via-background/95 to-background/90 backdrop-blur-md border-b border-border/40">
                 <div className="pt-4 pb-4 space-y-4">
                     {/* Header */}
                     <div>
@@ -177,7 +178,7 @@ export default function AnalyticsPage() {
                 </div>
             </div>
 
-            <div className="flex-1 min-h-0 overflow-y-auto space-y-8 pt-4">
+            <div className="space-y-8 pt-4">
                 {/* Stats Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat) => {
@@ -231,7 +232,7 @@ export default function AnalyticsPage() {
                                         outerRadius={100}
                                         paddingAngle={5}
                                         dataKey="value"
-                                        label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
+                                        label={false}
                                         labelLine={false}
                                     >
                                         {statusData.map((entry, index) => (
@@ -380,6 +381,7 @@ export default function AnalyticsPage() {
                         </div>
                 </CardContent>
             </Card>
+            </div>
             </div>
         </div>
     );

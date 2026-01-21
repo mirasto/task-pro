@@ -4,10 +4,27 @@ import { useState } from "react";
 import { useGetTasksQuery, Task, useUpdateTaskMutation } from "@/store/api/tasksApi";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { AddTaskButton } from "@/components/tasks/TaskForm";
-import { Loader2 } from "lucide-react";
+import { Loader2, Search, Filter } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/store/hooks";
+import {
+  DndContext,
+  DragOverlay,
+  closestCorners,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverEvent,
+  TouchSensor,
+} from "@dnd-kit/core";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { BoardColumn } from "@/components/board/BoardColumn";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 export default function BoardPage() {
   const { user, loading: authLoading } = useAppSelector((s) => s.auth);
@@ -20,8 +37,29 @@ export default function BoardPage() {
   });
   const [updateTask] = useUpdateTaskMutation();
   const { t } = useTranslation();
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+  // Filter State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<Task["priority"] | "all">("all");
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement to start drag, allowing clicks
+      },
+    }),
+    useSensor(TouchSensor, {
+        activationConstraint: {
+            delay: 250,
+            tolerance: 5,
+        }
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   if ((authLoading || isLoading) && !tasks.length) {
     return (
@@ -42,22 +80,57 @@ export default function BoardPage() {
     );
   }
 
+  const filteredTasks = tasks.filter((task) => {
+    const matchesSearch =
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesPriority =
+      priorityFilter === "all" || task.priority === priorityFilter;
+    return matchesSearch && matchesPriority;
+  });
+
   const tasksByStatus = {
-    todo: tasks.filter((t) => t.status === "todo"),
-    in_progress: tasks.filter((t) => t.status === "in_progress"),
-    done: tasks.filter((t) => t.status === "done"),
+    todo: filteredTasks.filter((t) => t.status === "todo"),
+    in_progress: filteredTasks.filter((t) => t.status === "in_progress"),
+    done: filteredTasks.filter((t) => t.status === "done"),
   };
 
-  const handleStatusChange = async (task: Task, status: Task["status"]) => {
-    if (task.status === status) return;
-    setUpdatingId(task.id);
-    await updateTask({ id: task.id, data: { status } });
-    setUpdatingId(null);
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    setActiveId(active.id as string);
+    setActiveTask(active.data.current?.task || null);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+    setActiveTask(null);
+
+    if (!over) return;
+
+    const activeTask = active.data.current?.task as Task;
+    const overType = over.data.current?.type;
+    const overStatus = over.data.current?.status || (over.data.current?.task as Task)?.status;
+
+    if (!activeTask) return;
+
+    // If dropped on a column or a task in a different column
+    if (activeTask.status !== overStatus && overStatus) {
+       // Optimistic update logic could go here, but RTK Query cache invalidation handles it
+       try {
+         await updateTask({
+            id: activeTask.id,
+            data: { status: overStatus as Task["status"] }
+         }).unwrap();
+       } catch (error) {
+         console.error("Failed to update status", error);
+       }
+    }
   };
 
   return (
     <div className="h-full flex flex-col gap-6 overflow-hidden">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
             {t("board.title") || "Board"}
@@ -66,92 +139,73 @@ export default function BoardPage() {
             {t("board.subtitle") || "Manage tasks by status"}
           </p>
         </div>
-        <AddTaskButton />
-      </div>
-
-      {deleteError && (
-        <div className="rounded-md border border-destructive/40 bg-destructive/5 px-4 py-2 text-sm text-destructive">
-          {deleteError}
-        </div>
-      )}
-
-      <div className="flex-1 min-h-0">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 h-full">
-          {[
-            { id: "todo" as const, title: t("tasks.status.todo") || "To Do" },
-            { id: "in_progress" as const, title: t("tasks.status.in_progress") || "In Progress" },
-            { id: "done" as const, title: t("tasks.status.done") || "Done" },
-          ].map((column) => (
-          <div
-            key={column.id}
-            className={clsx(
-              "flex h-full min-h-[600px] flex-1 flex-col rounded-2xl p-6 transition-all duration-300",
-              column.id === "todo" &&
-                "bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-950/20 border border-blue-200/50 dark:border-blue-800/30",
-              column.id === "in_progress" &&
-                "bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-950/30 dark:to-yellow-950/20 border border-yellow-200/50 dark:border-yellow-800/30",
-              column.id === "done" &&
-                "bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/30 dark:to-green-950/20 border border-green-200/50 dark:border-green-800/30"
-            )}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div
-                  className={clsx(
-                    "h-3 w-3 rounded-full",
-                    column.id === "todo" && "bg-blue-500",
-                    column.id === "in_progress" && "bg-yellow-500",
-                    column.id === "done" && "bg-green-500"
-                  )}
+        <div className="flex flex-wrap items-center gap-2">
+            <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                    placeholder="Search tasks..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-[200px] pl-9 bg-background/50 backdrop-blur-sm"
                 />
-                <h3 className="font-semibold text-lg text-foreground">
-                  {column.title}
-                </h3>
-              </div>
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
-                {tasksByStatus[column.id].length}
-              </span>
             </div>
-
-            <div className="flex-1 space-y-4 overflow-y-auto custom-scrollbar pr-2">
-              {tasksByStatus[column.id].map((task) => (
-                <div key={task.id} className="space-y-2">
-                  <TaskCard task={task} onDeleteError={setDeleteError} />
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-sm text-muted-foreground">
-                      {t("Task status") || "Змінити статус задачі"}
-                    </span>
-                    {(["todo", "in_progress", "done"] as Task["status"][]).map((status) => (
-                      <button
-                        key={status}
-                        type="button"
-                        onClick={() => handleStatusChange(task, status)}
-                        disabled={updatingId === task.id || task.status === status}
+            <div className="flex bg-muted/50 p-1 rounded-lg backdrop-blur-sm border border-border/50">
+                {(['all', 'low', 'medium', 'high'] as const).map((p) => (
+                    <button
+                        key={p}
+                        onClick={() => setPriorityFilter(p)}
                         className={clsx(
-                          "h-10 min-w-[40px] rounded-full border px-3 text-[11px] font-medium transition-colors flex items-center justify-center",
-                          task.status === status
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-background text-muted-foreground border-border hover:bg-muted"
+                            "px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                            priorityFilter === p
+                                ? "bg-background text-foreground shadow-sm"
+                                : "text-muted-foreground hover:text-foreground"
                         )}
-                      >
-                        {t(`tasks.status.${status}`)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-              {tasksByStatus[column.id].length === 0 && (
-                <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
-                  <p className="text-sm font-medium">
-                    {t("board.no_tasks") || "No tasks in this column yet"}
-                  </p>
-                </div>
-              )}
+                    >
+                        {p === 'all' ? 'All' : p.charAt(0).toUpperCase() + p.slice(1)}
+                    </button>
+                ))}
             </div>
-          </div>
-        ))}
+          <AddTaskButton />
         </div>
       </div>
+
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="flex-1 min-h-0 overflow-x-auto pb-4">
+          <div className="grid gap-6 md:grid-cols-3 h-full min-w-[800px] md:min-w-0">
+            <BoardColumn
+              id="todo"
+              title={t("tasks.status.todo") || "To Do"}
+              tasks={tasksByStatus.todo}
+              color="blue"
+            />
+            <BoardColumn
+              id="in_progress"
+              title={t("tasks.status.in_progress") || "In Progress"}
+              tasks={tasksByStatus.in_progress}
+              color="yellow"
+            />
+            <BoardColumn
+              id="done"
+              title={t("tasks.status.done") || "Done"}
+              tasks={tasksByStatus.done}
+              color="green"
+            />
+          </div>
+        </div>
+
+        <DragOverlay>
+          {activeTask ? (
+            <div className="opacity-80 rotate-2 scale-105 cursor-grabbing">
+                <TaskCard task={activeTask} className="shadow-2xl ring-2 ring-primary/20 rounded-xl" />
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
     </div>
   );
 }
