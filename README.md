@@ -1,190 +1,177 @@
+# Task Pro
 
----
+![Next.js](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white) ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-a08021?style=for-the-badge&logo=firebase&logoColor=ffcd34) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-  
+**Task Pro** is a modern, feature-rich task management application built to help users organize their daily activities efficiently. It combines a robust tech stack with a clean, responsive user interface to deliver a seamless experience for tracking tasks, monitoring productivity, and managing personal workflows.
 
-# Task Pro — Task Management Dashboard
-
-  
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Next.js-15-black" />
-  <img src="https://img.shields.io/badge/React-19-61dafb" />
-  <img src="https://img.shields.io/badge/TypeScript-Strict-blue" />
-  <img src="https://img.shields.io/badge/Redux-RTK%20Query-764abc" />
-  <img src="https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore-ffca28" />
-</p>
+## Project Overview
 
 
+Task Pro is designed with a focus on user experience and performance. It leverages **Next.js 16** for server-side rendering and optimized routing, **Firebase** for secure authentication, and **Redux Toolkit** for efficient state management. The application supports multiple languages, dark/light themes, and provides real-time analytics to help users visualize their progress.
 
 
----
+## Tech Stack
 
-  
+### Core Frameworks & Languages
 
-## 🚀 Project Overview
+- **Next.js 16**: The React framework for production, utilizing the App Router for nested layouts and streaming.
+- **React 19**: The latest version of React for building interactive user interfaces.
+- **TypeScript**: Ensures type safety and improves developer experience across the codebase.
+### State Management & Data Fetching
 
-  
+- **Redux Toolkit**: The official, opinionated, batteries-included toolset for efficient Redux development.
+- **RTK Query**: A powerful data fetching and caching tool designed to simplify loading data in a web application.
+### Backend & Authentication
+- **Firebase**:
+  - **Authentication**: Secure email/password login and anonymous guest access.
+### Styling & UI
 
-**Task Pro** is a production-ready task management dashboard focused on **performance, scalability, and clean architecture**.
+- **Tailwind CSS 4**: A utility-first CSS framework for rapid UI development.
+- **Framer Motion**: A production-ready motion library for React to create smooth animations.
+- **Lucide React**: Beautiful & consistent icons.
+- **Radix UI**: Unstyled, accessible components for building high-quality design systems.
+- **React Hook Form** + **Zod**: Performant, flexible, and extensible forms with schema validation.
+### Other Tools
 
-![Preview](https://iili.io/fUPLqHg.png)  
+- **i18next**: Internationalization framework for English and Ukrainian language support.
 
-Built with **Next.js App Router**, **React 19**, and **Redux Toolkit**, the app demonstrates real-world patterns: authentication, protected routes, real-time data sync, analytics, and internationalization.
+- **Recharts**: A composable charting library built on React components.
 
-  
+## Key Features
 
----
+### Authentication
 
-  
+- **Secure Login/Register**: Email and password authentication via Firebase.
 
-## 🎯 Key Features
+- **Guest Access**: Try the application instantly without creating an account.
 
-  
+- **Protected Routes**: Middleware ensures sensitive pages are only accessible to authenticated users.
+### Task Management
 
-* 🔐 **Authentication** — Firebase Auth (Email / Guest), protected routes
+- **CRUD Operations**: Create, Read, Update, and Delete tasks seamlessly.
 
-* 📋 **Task Management** — CRUD, priorities, List View
+- **Status Tracking**: Categorize tasks as "To Do", "In Progress", or "Done".
 
-* 📊 **Analytics** — real-time charts, completion metrics
+- **Priority Levels**: Assign Low, Medium, or High priority to tasks.
 
-* 🌍 **i18n** — English & Ukrainian
+- **Visual Indicators**: Color-coded badges and status indicators for quick scanning.
+### Analytics Dashboard
 
-* 🎨 **UI/UX** — Tailwind CSS, Framer Motion, Dark/Light mode
+- **Real-time Metrics**: View completion rates and total task counts.
 
-* 💾 **Data Layer** — Firestore with LocalStorage fallback
+- **Visualizations**: Interactive pie charts and bar graphs displaying task distribution by status and priority.
+### Localization & Theming
 
-  
+- **Multi-language Support**: Toggle between English and Ukrainian instantly.
 
----
-## 🧠 Tech Stack
-
-- **Framework & Architecture**
-    
-    - Next.js 15 (**App Router**) with clear server/client component separation
-        
-    - React 19 with **strict TypeScript** typing
-        
-- **State & Data Management**
-    
-    - **Redux Toolkit + RTK Query** for normalized global state
-        
-    - Cache invalidation, optimistic updates, and real-time Firestore sync
-        
-    - LocalStorage fallback for offline support and performance
-        
-- **Authentication & Security**
-    
-    - **Firebase Auth** (Email / Guest)
-        
-    - Auth Guard for protected routes and session persistence
-        
-- **UI & UX**
-    
-    - **Tailwind CSS 4** for scalable styling
-        
-    - **Framer Motion** for micro-animations
-        
-    - **Recharts** for analytics and data visualization
-        
-    - Modular UI system (reusable components, providers, custom hooks)
-        
-- **Forms & Validation**
-    
-    - **React Hook Form** with **Zod** schema validation
-        
-- **Backend / BaaS**
-    
-    - **Firebase Firestore** as real-time database
-        
-    - Secure, scalable backend-as-a-service architecture
-
+- **Dark/Light Mode**: Fully supported themes that respect system preferences or user selection.
 
   
 
+## Installation & Setup
+Follow these steps to get a local copy up and running.
+### Prerequisites
 
-  
+- Node.js (v18 or higher)
 
----
+- npm or yarn
 
-## 🏗️ Project Architecture
+### 1. Clone the repository
 
-The project follows a **modular, scalable architecture** aligned with modern **Next.js App Router** best practices.
+```bash
 
-### High-Level Architecture
+git clone https://github.com/mirasto/task-pro.git
 
-- **App Router (Next.js 15)**
-    
-    - Clear separation between public, auth, and protected dashboard routes
-    
-    - Shared layout with global providers (Redux, Theme, i18n)
-        
-- **State & Data Layer**
-    
-    - **Redux Toolkit** for global state
-        
-    - **RTK Query** for server state, caching, and Firestore synchronization
-        
-    - Optimistic updates and automatic cache invalidation
-        
-- **Authentication Flow**
-    
-    - Firebase Auth listener initializes session state
-        
-    - Auth Guard protects private routes
-        
-    - Supports Guest and Authenticated modes without UI flicker
-        
-- **Data Persistence**
-    
-    - **Firestore** as primary real-time database
-        
-    - **LocalStorage** as offline fallback and performance optimization
-        
-    - Centralized error handling
-        
-
----
-
-### Directory Structure (Simplified)
-
+cd task-pro
 
 ```
+
+  
+
+### 2. Install dependencies
+
+```bash
+
+npm install
+
+# or
+
+yarn install
+
+```
+
+  
+
+### 3. Configure Environment Variables
+
+Create a `.env.local` file in the root directory and add your Firebase configuration credentials. You can use `.env.example` as a template.
+
+  
+
+```env
+
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
+
+```
+
+  
+
+### 4. Run the development server
+
+```bash
+
+npm run dev
+
+```
+
+  
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+  
+
+## 📂 Project Structure
+
+  
+
+```
+
 task-pro/
-├─ app/                     # Next.js App Router (routes & layouts)
-│  ├─ (auth)/               # Authentication: Login / Register / Guest
-│  ├─ (dashboard)/          # Protected dashboard routes
-│  └─ layout.tsx            # Global layout & providers
-│
-├─ components/              # Reusable UI & feature components
-│  ├─ ui/                   # Buttons, Inputs, Modals
-│  └─ tasks/                # Task-related components
-│
-├─ store/                   # Redux Toolkit slices & RTK Query APIs
-├─ lib/                     # Firebase, i18n, app configuration
-├─ hooks/                   # Custom React hooks
-└─ public/                  # Static assets
+
+├── app/                  # Next.js App Router pages and layouts
+
+│   ├── (auth)/           # Authentication routes (Login, Register)
+
+│   ├── (dashboard)/      # Protected application routes (Tasks, Analytics)
+
+│   └── (marketing)/      # Public landing page
+
+├── components/           # Reusable UI components
+
+│   ├── tasks/            # Task-specific components (TaskCard, TaskForm)
+
+│   ├── ui/               # Generic UI elements (Buttons, Inputs)
+
+│   └── providers/        # Context providers (Theme, Store, i18n)
+
+├── lib/                  # Utility functions and configurations
+
+├── store/                # Redux store and API slices
+
+├── hooks/                # Custom React hooks
+
+└── public/               # Static assets
+
 ```
-
-
-
-
-  
-
-## 📸 Screenshots
-
-  
-
-<p align="center">
-
-  <img src="https://i.ibb.co/YTPT17D3/profile.png" width="100%" />
-  <img src="https://i.ibb.co/TB6Zwr09/tasks.png" width="100%" />
-
-</p>
-
-  
-
----
-## 🔗 Links
-
-* **Live Demo:** [*(task-pro)*](https://task-pro-eta.vercel.app/)

@@ -110,7 +110,7 @@ function TaskForm({ onClose }: { onClose: () => void }) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">{t("tasks.form.status") || "Tasks Status"}</label>
+              <label className="text-sm font-medium text-foreground">{t("Tasks Status") || "Tasks Status"}</label>
               <div className="flex flex-wrap gap-2">
                 {[
                   { id: 'todo', label: t("tasks.status.todo") || "To Do", color: 'border-blue-500 text-blue-600 bg-blue-50' },
